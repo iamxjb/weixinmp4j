@@ -1,0 +1,137 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.user
+ * UserManager.java
+ * Ver0.0.1
+ * 2016年5月4日-下午1:17:29
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.user;
+
+import java.util.HashMap;
+
+import org.json.JSONObject;
+import org.apache.log4j.Logger;
+
+
+import weixin.util.HttpsDataManager;
+
+/**
+ * 
+ * UserManager
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年5月4日 下午1:17:29
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class UserManager {
+
+	private static Logger logger = Logger.getLogger(UserManager.class);  
+	
+    public String getUserNicknameByOpenid(String openid){
+    	
+		//调用获取用户信息的接口
+		MemcachManager mcManager = MemcachManager.getMemcacheManager();
+	    String  getUserInforUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+mcManager.getAccessToken()+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取昵称："+singleUseInfoObject.toString());
+		
+		if(singleUseInfoObject.getInt("subscribe") == 1){
+			return singleUseInfoObject.getString("nickname");			
+		}else{
+			return "微信用户";
+		}
+
+}
+	
+    public String getUserImgByOpenid(String openid){
+
+	    String  getUserInforUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+mcManager.getAccessToken()+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取头像："+singleUseInfoObject.toString());
+		if(singleUseInfoObject.getInt("subscribe") == 1){
+			return singleUseInfoObject.getString("headimgurl");
+		}else{
+			return "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png";
+		}
+
+}
+	
+    
+    public HashMap getUserByOpenid(String openid){
+    	
+		//调用获取用户信息的接口
+		MemcachManager mcManager = MemcachManager.getMemcacheManager();
+	    String  getUserInforUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+mcManager.getAccessToken()+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+	    HashMap  map   = new HashMap();
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取基本信息："+singleUseInfoObject.toString());
+		String jsonRES  = singleUseInfoObject.toString();
+		if(!jsonRES.contains("subscribe")){
+			
+			map.put("nickname", "悟空来");
+			map.put("headimgurl", "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png");
+			
+		}else{
+			
+			if(singleUseInfoObject.getInt("subscribe") == 1){
+				map.put("nickname", singleUseInfoObject.getString("nickname"));
+				map.put("headimgurl", singleUseInfoObject.getString("headimgurl"));
+			}else{
+				map.put("nickname", "悟空来");
+				map.put("headimgurl", "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png");
+			}
+			
+		}
+
+		return map;
+      }
+	
+	public boolean isSubscribe(String openid){
+		
+		if(openid == null){
+			return false;
+		}
+		//调用获取用户信息的接口
+		MemcachManager mcManager = MemcachManager.getMemcacheManager();
+	    String  getUserInforUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+mcManager.getAccessToken()+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取基本信息："+singleUseInfoObject.toString());
+		if(singleUseInfoObject.getInt("subscribe") == 1){
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+	
+	/**
+	 * main(这里用一句话描述这个方法的作用)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param args 
+	 *void
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

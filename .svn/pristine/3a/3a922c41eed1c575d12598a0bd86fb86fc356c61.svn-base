@@ -1,0 +1,11 @@
+#prd_config
+appid=wxff5be05cad2b9a89
+appsecret=6cf98e501c110ca7db00be96ece98fc7
+allarea_api=http://api.weixin.qq.com/
+shanghaia_api=http://sh.api.weixin.qq.com/
+shenzhen_api=http://sz.api.weixin.qq.com/
+xianggang_api=http://hk.api.weixin.qq.com/
+
+#test_config 
+#appid=wx9e0a70558c34897b
+#appsecret=84a9c9af7e124e282c3ab1f74b5023a8

@@ -1,0 +1,364 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.user
+ * UserManager.java
+ * Ver0.0.1
+ * 2016年5月4日-下午1:17:29
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.user;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.apache.log4j.Logger;
+
+import weixin.util.HttpsDataManager;
+import weixin.base.APIConfig;
+import weixin.base.AccessTokenManager;
+
+/**
+ * 
+ * UserManager
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年5月4日 下午1:17:29
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class UserManager {
+
+	private static Logger logger = Logger.getLogger(UserManager.class);  
+	
+    public String getNicknameByOpenid(String openid){
+    	
+		//调用获取用户信息的接口
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+	    try {
+	    	//解析对应的JSON代码
+	    	JSONObject singleUseInfoObject;
+			singleUseInfoObject = new JSONObject(strJSONRes);
+			logger.info("根据openid获取昵称："+singleUseInfoObject.toString());
+		
+			if(singleUseInfoObject.getInt("subscribe") == 1){
+				return singleUseInfoObject.getString("nickname");			
+			}else{
+				return "微信用户";
+			}
+	    } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return "微信用户";
+}
+	
+    public String getImgByOpenid(String openid){
+
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+	    try {
+	    	//解析对应的JSON代码
+	    	JSONObject singleUseInfoObject;
+			singleUseInfoObject = new JSONObject(strJSONRes);
+		
+			logger.debug("根据openid获取头像："+singleUseInfoObject.toString());
+			if(singleUseInfoObject.getInt("subscribe") == 1){
+				return singleUseInfoObject.getString("headimgurl");
+			}else{
+				return "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png";
+			}
+	    } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png";
+}
+	
+    
+    public HashMap getUserInfoByOpenid(String openid){
+    	
+		//调用获取用户信息的接口
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+	    HashMap  map   = new HashMap();
+	    try {
+			//解析对应的JSON代码
+	    	JSONObject singleUseInfoObject;
+			singleUseInfoObject = new JSONObject(strJSONRes);
+		
+			logger.debug("根据openid获取基本信息："+singleUseInfoObject.toString());
+			//String jsonRES  = singleUseInfoObject.toString();
+			//if(!jsonRES.contains("subscribe")){
+			if(!strJSONRes.contains("subscribe")){
+				
+				map.put("nickname", "悟空来");
+				map.put("headimgurl", "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png");
+			
+			}else{
+			
+				if(singleUseInfoObject.getInt("subscribe") == 1){
+					map.put("nickname", singleUseInfoObject.getString("nickname"));
+					map.put("headimgurl", singleUseInfoObject.getString("headimgurl"));
+				}else{
+					map.put("nickname", "悟空来");
+					map.put("headimgurl", "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png");
+				}
+			
+			}
+	    } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return map;
+      }
+	
+    /**
+     * 
+     * isSubscribe(查看用户是否关注)
+     * 
+     * (这里描述这个方法适用条件 – 可选)
+     * @param openid
+     * @return 
+     *boolean
+     * @exception 
+     * @since  0.0.1
+     */
+    
+	public boolean isSubscribe(String openid){
+		
+		if(openid == null){
+			return false;
+		}
+		//调用获取用户信息的接口
+
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+	    try {
+	    	//解析对应的JSON代码
+	    	JSONObject singleUseInfoObject;
+			singleUseInfoObject = new JSONObject(strJSONRes);
+		
+			logger.debug("根据openid获取基本信息："+singleUseInfoObject.toString());
+			if(strJSONRes.contains("subscribe")&&singleUseInfoObject.getInt("subscribe") == 1){
+				return true;
+			}else{
+				return false;
+			}
+	    } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return false;
+	}
+	
+    /**
+     * 
+     * getSubscribeList(获取当前账户的所有人的openid)
+     * 少于1000人时调用一次
+     * 大于1000人时要调用多次
+     * 第一次调用的时候next_openid为空
+     * @return 
+     *List
+     * @exception 
+     * @since  0.0.1
+     */
+	public List getSubscribeList(String next_openid){
+		
+		List<String> userList = new ArrayList<String>();
+		String firstId = next_openid;
+		int count = 0;
+		
+		while(true){
+			//调用获取用户列表接口
+			String url = APIConfig.GET_USERLIST+AccessTokenManager.accesstoken+"&next_openid="+firstId;
+			String response = HttpsDataManager.sendData(url);//!!!HttpsDataManager需要有GET的请求方式
+			//解析对应的JSON代码
+			try{
+				JSONObject responseJson  = new JSONObject(response);
+				count = responseJson.getInt("count");
+				System.out.println("-------------------"+count);
+				if(count==0)
+					break;
+				JSONObject data = (JSONObject) responseJson.get("data");
+				JSONArray openid = (JSONArray) data.get("openid");
+				for(int i=0;i<count;i++){
+					userList.add(openid.get(i).toString());
+				}
+				firstId = responseJson.getString("next_openid");
+			} catch(JSONException e){
+				System.out.println(response);
+				break;
+			}
+		}
+	    
+		return userList;
+	} 
+	
+	/**
+	 * 
+	 * updateRemark(设置用户备注名)
+	 * 
+	 * 新的备注名，长度必须小于30字符 
+	 * 根据传入的两个数据进行json数据的拼装
+	 * @param openid
+	 * @param remark
+	 * @return 
+	 *boolean
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public boolean updateRemark(String openid,String remark){
+		
+		boolean success = false;
+		
+		//构建请求信息
+		JSONObject rootJson = new JSONObject();
+		try {
+			rootJson.put("openid", openid);
+			rootJson.put("remark", remark);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		
+		//调用设置用户备注名接口
+		String url = APIConfig.UPDATE_REMARK+AccessTokenManager.accesstoken;
+		String response = HttpsDataManager.sendData(url, rootJson.toString());
+		
+		//解析对应的JSON代码
+	    try{
+	    	JSONObject responseJson  = new JSONObject(response);
+	    	if(responseJson.getString("errmsg").equals("ok"))
+	    		success = true;
+	    } catch(JSONException e){
+	    		System.out.println(e.toString());
+	    }
+	    
+		return success;
+	}
+	
+	/**
+	 * main(这里用一句话描述这个方法的作用)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param args 
+	 *void
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+//	       //1、获取accesstoken 
+//			//AccessTokenManager  atm  = new AccessTokenManager();
+//			AccessTokenManager.accesstoken = "wdo7bOLczlrbucdaJVt0UKEJIrand20hNoJoqjOIY-NwwLyertT1S2Jw7H9z5t_9BOpj3F_5uIEPSkvUK19Z4q09kf6gLHPOkYnptYVT-vikcj2UHfbuYoVktglWRcAPVUKdAGALKA";
+//	        
+//			//2、测试所有的会员ID显示
+//			UserManager  um  = new UserManager();
+//			List  list  = um.getSubscribeList("");
+//			
+//			System.out.println("list size:"+list.size());
+//			
+//			List<String> nicknames = new ArrayList<String>();
+//			
+//			for(int i=0;i<list.size();i++){
+//				
+//				String nickname = um.getNicknameByOpenid((String) list.get(i));
+//				//System.out.println("nickname:"+nickname+"\t"+"openid:"+(String) list.get(i));
+//				nicknames.add("nickname: "+nickname+"  openid: "+(String) list.get(i));
+//			}
+//			for(int i=0;i<nicknames.size();i++){
+//				System.out.println(nicknames.get(i));
+//			}
+		
+//----------------------------------------------------------------------------------------------
+		
+		//1、获取accesstoken
+//		AccessTokenManager  atm  = new AccessTokenManager();
+//		AccessTokenManager.accesstoken = "1MBXY7Sjm58zbjvUbv4c_GqPXcACElMUrAGW-dxjnEfEuJ0cuCjtUJDQaxHo96DW0Pf6P2ca0pRB6wd9wFvmt4x62wekbpcS92tdNR9rZZzy16OsGdrYyo7FP0pXgPNcXMQgADAGVZ";
+		
+		//2、测试获取用户昵称
+//		UserManager um = new UserManager();
+//		String openid1 = "oFHIYt2guBTMngMiwFCAQdpOlu5k";
+//		String nickname1 = um.getNicknameByOpenid(openid1);
+//		String openid2 = "oFHIYtxveXh57uRNKptUAwBH2u7Y";
+//		String nickname2 = um.getNicknameByOpenid(openid2);
+//		System.out.println("------get users' nicknames------");
+//		System.out.println("openid1: "+openid1+" nickname1: "+nickname1);
+//		System.out.println("openid2: "+openid2+" nickname2: "+nickname2);
+		
+		//3、测试获取用户头像
+//		UserManager um = new UserManager();
+//		String openid1 = "oFHIYt2guBTMngMiwFCAQdpOlu5k";
+//		String image_url1 = um.getImgByOpenid(openid1);
+//		String openid2 = "oFHIYtxveXh57uRNKptUAwBH2u7Y";
+//		String image_url2 = um.getImgByOpenid(openid2);
+//		System.out.println("------get users' head images------");
+//		System.out.println("openid1: "+openid1+"\n image_url1: "+image_url1);
+//		System.out.println("openid2: "+openid2+"\n image_url2: "+image_url2);
+		
+		//4、测试获取用户信息
+//		UserManager um = new UserManager();
+//		HashMap hm = null;
+//		String openid = "oFHIYt2guBTMngMiwFCAQdpOlu5k";
+//		hm = um.getUserInfoByOpenid(openid);
+//		System.out.println("------get user's information------");
+//		System.out.println("openid: "+openid);
+//		System.out.println("nickname: "+hm.get("nickname"));
+//		System.out.println("image_url: "+hm.get("headimgurl"));
+		
+		//5、测试查看用户是否关注
+//		UserManager um = new UserManager();
+//		String openid1 = "oFHIYt2guBTMngMiwFCAQdpOlu5k";
+//		boolean result1 = um.isSubscribe(openid1);
+//		String openid2 = "oFHIYt2guBTMngMiwFCAQdpOlt4m";
+//		boolean result2 = um.isSubscribe(openid2);
+//		System.out.println("------check isSubscribe?------");
+//		System.out.println("result: "+result1);
+//		System.out.println("result: "+result2);
+		
+		//6、测试获取用户列表
+//		UserManager um = new UserManager();
+//		List<String> list1 = um.getSubscribeList("");
+//		List<String> list2 = um.getSubscribeList("oFHIYt106KW_uXjUFXRfSrU2vo8w");
+//		System.out.println("------/get subscribe list-1/------");
+//		System.out.println("count: "+list1.size());
+//		for(int i=0;i<list1.size();i++){
+//			System.out.println(list1.get(i));
+//		}
+//		System.out.println("------/get subscribe list-2/------");
+//		System.out.println("count: "+list2.size());
+//		for(int i=0;i<list2.size();i++){
+//			System.out.println(list2.get(i));
+//		}
+		
+		//7、测试设置用户备注名
+//		UserManager um = new UserManager();
+//		String openid = "oFHIYt2guBTMngMiwFCAQdpOlu5k";
+//		
+//		String remark = "shouzi";
+//		boolean result = um.updateRemark(openid, remark);
+//		um.getUserInfoByOpenid(openid);
+//		System.out.println("------set remark for the user------");
+//		System.out.println("result: "+result);
+//		
+//		String remark = "";
+//		boolean result = um.updateRemark(openid, remark);
+//		um.getUserInfoByOpenid(openid);
+//		System.out.println("------set remark for the user------");
+//		System.out.println("result: "+result);
+		
+	}
+
+}

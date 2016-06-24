@@ -1,0 +1,222 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.msg
+ * ResponseMsg.java
+ * Ver0.0.1
+ * 2016年6月20日-下午1:57:47
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.msg;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
+
+/**
+ * 
+ * ResponseMsg
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年6月20日 下午1:57:47
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class ResponseMsg {
+
+	/**
+	 * 被动回复文本消息
+	 * @param toName	接收人openid
+	 * @param fromName	开发者公众号
+	 * @param content	发送内容
+	 * @return String	xml格式的数据
+	 */
+	public String responseText(String toName, String fromName, String content){
+
+		String returnStr = "";
+		
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("FromUserName").setText(fromName));
+		rootXML.addContent(new Element("CreateTime").setText(getCreateTime()));
+		rootXML.addContent(new Element("MsgType").setText("text"));
+		rootXML.addContent(new Element("Content").setText(content));
+
+		returnStr = getXMLType(rootXML);
+		return returnStr;
+	}
+	
+	/**
+	 * 被动回复图片消息
+	 * @param toName	接收人openid
+	 * @param fromName	开发者公众号
+	 * @param image		发送的图片
+	 * @return String	xml格式的数据
+	 */
+	public String responseImage(String toName, String FromName, Image image){
+
+		String returnStr = "";
+		
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("FromUserName").setText(FromName));
+		rootXML.addContent(new Element("CreateTime").setText(getCreateTime()));
+		rootXML.addContent(new Element("MsgType").setText("image"));
+		
+		Element fXML = new Element("Image");
+		fXML.addContent(new Element("MediaId").setText(image.getMedia_id()));	
+		rootXML.addContent(fXML);
+		
+		returnStr = getXMLType(rootXML);
+		return returnStr;
+	}
+	
+	/**
+	 * 被动回复语音消息
+	 * @param toName	接收人openid
+	 * @param fromName	开发者公众号
+	 * @param voice		发送的语音
+	 * @return String	xml格式的数据
+	 */
+	public String responseVoice(String toName, String FromName, Voice voice){
+		
+		String returnStr = "";
+		
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("FromUserName").setText(FromName));
+		rootXML.addContent(new Element("CreateTime").setText(getCreateTime()));
+		rootXML.addContent(new Element("MsgType").setText("voice"));
+		
+		Element fXML = new Element("Voice");
+		fXML.addContent(new Element("MediaId").setText(voice.getMedia_id()));	
+		rootXML.addContent(fXML);
+
+		returnStr = getXMLType(rootXML);
+		return returnStr;
+	}
+	
+	/**
+	 * 被动回复视频消息
+	 * @param toName	接收人openid
+	 * @param fromName	开发者公众号
+	 * @param video		发送的视频
+	 * @return String	xml格式的数据
+	 */
+	public String responseVideo(String toName, String fromName, Video video){
+
+		String returnStr = "";
+		
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("FromUserName").setText(fromName));
+		rootXML.addContent(new Element("CreateTime").setText(getCreateTime()));
+		rootXML.addContent(new Element("MsgType").setText("video"));
+
+		Element mXML = new Element("Video");
+		mXML.addContent(new Element("Title").setText(video.getTitle()));
+		mXML.addContent(new Element("Description").setText(video.getDescription()));
+		mXML.addContent(new Element("MediaId").setText(video.getMediaId()));
+		rootXML.addContent(mXML);
+
+		returnStr = getXMLType(rootXML);
+		return returnStr;
+	}
+	
+	/**
+	 * 被动回复音乐消息
+	 * @param toName	接收人openid
+	 * @param fromName	开发者公众号
+	 * @param music		发送的音乐
+	 * @return String	xml格式的数据
+	 */
+	public String responseMusic(String toName, String fromName, Music music){
+
+		String returnStr = "";
+		
+		Element rootXML = new Element("xml");		
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("FromUserName").setText(fromName));
+		rootXML.addContent(new Element("CreateTime").setText(getCreateTime()));
+		rootXML.addContent(new Element("MsgType").setText("music"));
+
+		Element mXML = new Element("Music");
+		mXML.addContent(new Element("Title").setText(music.getTitle()));
+		mXML.addContent(new Element("Description").setText(music.getDescription()));
+		mXML.addContent(new Element("MusicURL").setText(music.getMusicURL()));
+		mXML.addContent(new Element("HQMusicUrl").setText(music.getHQMusicUrl()));
+		mXML.addContent(new Element("ThumbMediaId").setText(music.getThumbMediaId()));
+		rootXML.addContent(mXML);
+
+		returnStr = getXMLType(rootXML);
+		return returnStr;
+	}
+	
+	/**
+	 * 被动回复图文消息
+	 * @param toName	接收人openid
+	 * @param fromName	开发者公众号
+	 * @param articles	发送的图文(不可超过10个)
+	 * @return String	xml格式的数据
+	 */
+	public String responseNews(String toName, String fromName, List<Article> articles){
+				
+		String returnStr = "";
+		if(articles.size()>10)	//图文消息限制10条以内
+			return returnStr;
+		
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("FromUserName").setText(fromName));
+		rootXML.addContent(new Element("CreateTime").setText(getCreateTime()));
+		rootXML.addContent(new Element("MsgType").setText("news"));
+		rootXML.addContent(new Element("ArticleCount").setText(String.valueOf(articles.size())));
+
+		Element fXML = new Element("Articles");
+		Element mXML = null;
+
+		for(int i = 0 ;i<=articles.size();i++){
+			mXML = new Element("item");
+			mXML.addContent(new Element("Title").setText(((Article)articles.get(i)).getTitle()));
+			mXML.addContent(new Element("Description").setText(((Article)articles.get(i)).getDescription()));
+			mXML.addContent(new Element("PicUrl").setText(((Article)articles.get(i)).getPicUrl()));
+			mXML.addContent(new Element("Url").setText(((Article)articles.get(i)).getUrl()));
+			fXML.addContent(mXML);
+			rootXML.addContent(fXML);
+		}
+		
+		returnStr = getXMLType(rootXML);
+		return returnStr;
+	}
+	
+	/**
+	 * 获取当前时间(yyyyMMddHHmmss)
+	 * @return String	当前时间戳
+	 */
+	private String getCreateTime(){
+		SimpleDateFormat format=new SimpleDateFormat("yyyyMMddHHmmss");
+		return format.format(new Date());
+	}
+	
+	/**
+	 * 转换为XML格式字符串
+	 * @return String	XML格式字符串
+	 */
+	private String getXMLType(Element e){
+		Document doc = new Document(e); 
+		XMLOutputter XMLOut = new XMLOutputter();  
+		return XMLOut.outputString(doc);
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

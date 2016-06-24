@@ -1,0 +1,87 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.user
+ * UserTagManager.java
+ * Ver0.0.1
+ * 2016年6月21日-下午1:59:00
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.user;
+
+import java.util.List;
+
+/**
+ * 
+ * UserTagManager
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年6月21日 下午1:59:00
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class UserTagManager {
+
+	/**
+	 * 
+	 * addUserTag(批量为用户打标签)
+	 * 标签功能目前支持公众号为用户打上最多三个标签
+	 * @param tagid
+	 * @param openidList
+	 * @return 
+	 *boolean
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public boolean addUserTag(int tagid,List  openidList){
+		
+		return false;
+	}
+	
+	/**
+	 * 
+	 * deleteUserTag(批量为用户取消标签)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param tagid
+	 * @param openidList
+	 * @return 
+	 *boolean
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public boolean deleteUserTag(int tagid,List  openidList){
+		return false;
+	}
+	
+	/**
+	 * 
+	 * getUserTag(获取用户身上的标签列表)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param openid
+	 * @return 
+	 *List
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public  List getUserTag(String openid){
+	  return null;	
+	}
+	
+	
+	
+	/**
+	 * main(这里用一句话描述这个方法的作用)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param args 
+	 *void
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,234 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.user
+ * UserManager.java
+ * Ver0.0.1
+ * 2016年5月4日-下午1:17:29
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.user;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.apache.log4j.Logger;
+
+import weixin.util.HttpsDataManager;
+import weixin.base.APIConfig;
+import weixin.base.AccessTokenManager;
+
+/**
+ * 
+ * UserManager
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年5月4日 下午1:17:29
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class UserManager {
+
+	private static Logger logger = Logger.getLogger(UserManager.class);  
+	
+    public String getNicknameByOpenid(String openid){
+    	
+		//调用获取用户信息的接口
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取昵称："+singleUseInfoObject.toString());
+		
+		if(singleUseInfoObject.getInt("subscribe") == 1){
+			return singleUseInfoObject.getString("nickname");			
+		}else{
+			return "微信用户";
+		}
+
+}
+	
+    public String getImgByOpenid(String openid){
+
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取头像："+singleUseInfoObject.toString());
+		if(singleUseInfoObject.getInt("subscribe") == 1){
+			return singleUseInfoObject.getString("headimgurl");
+		}else{
+			return "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png";
+		}
+
+}
+	
+    
+    public HashMap getUserInfoByOpenid(String openid){
+    	
+		//调用获取用户信息的接口
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+	    HashMap  map   = new HashMap();
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取基本信息："+singleUseInfoObject.toString());
+		String jsonRES  = singleUseInfoObject.toString();
+		if(!jsonRES.contains("subscribe")){
+			
+			map.put("nickname", "悟空来");
+			map.put("headimgurl", "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png");
+			
+		}else{
+			
+			if(singleUseInfoObject.getInt("subscribe") == 1){
+				map.put("nickname", singleUseInfoObject.getString("nickname"));
+				map.put("headimgurl", singleUseInfoObject.getString("headimgurl"));
+			}else{
+				map.put("nickname", "悟空来");
+				map.put("headimgurl", "http://baodating.net.cn/baodating/weixin/images/wukonglai200200.png");
+			}
+			
+		}
+
+		return map;
+      }
+	
+    /**
+     * 
+     * isSubscribe(查看用户是否关注)
+     * 
+     * (这里描述这个方法适用条件 – 可选)
+     * @param openid
+     * @return 
+     *boolean
+     * @exception 
+     * @since  0.0.1
+     */
+    
+	public boolean isSubscribe(String openid){
+		
+		if(openid == null){
+			return false;
+		}
+		//调用获取用户信息的接口
+
+	    String  getUserInforUrl = APIConfig.USER_INFO+AccessTokenManager.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    
+	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
+	    
+		//解析对应的JSON代码
+	    JSONObject singleUseInfoObject  = new JSONObject(strJSONRes);
+		logger.debug("根据openid获取基本信息："+singleUseInfoObject.toString());
+		if(singleUseInfoObject.getInt("subscribe") == 1){
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+	
+    /**
+     * 
+     * getSubscribeList(获取当前账户的所有人的openid)
+     * 少于1000人时调用一次
+     * 大于1000人时要调用多次
+     * 第一次调用的时候next_openid为空
+     * @return 
+     *List
+     * @exception 
+     * @since  0.0.1
+     */
+	public List getSubscribeList(String next_openid){
+		List<String> userList = new ArrayList<String>();
+		String firstId = next_openid;
+		
+		do{
+			//调用获取用户列表接口
+			String url = APIConfig.GET_USERLIST+AccessTokenManager.accesstoken+"&next_openid="+firstId;
+			String response = HttpsDataManager.sendData(url);//!!!HttpsDataManager需要有GET的请求方式
+	    
+			//解析对应的JSON代码
+			try{
+				JSONObject responseJson  = new JSONObject(response);
+				JSONObject data = (JSONObject) responseJson.get("data");
+				JSONArray openid = (JSONArray) data.get("openid");
+				for(int i=0;i<openid.length();i++){
+					userList.add(openid.get(i).toString());
+				}
+				firstId = responseJson.getString("next_openid");
+			} catch(JSONException e){
+				System.out.println(response);
+			}
+		} while(firstId.length()>0);
+	    
+		return userList;
+	} 
+	
+	
+	/**
+	 * 
+	 * updateRemark(设置用户备注名)
+	 * 
+	 * 新的备注名，长度必须小于30字符 
+	 * 根据传入的两个数据进行json数据的拼装
+	 * @param openid
+	 * @param remark
+	 * @return 
+	 *boolean
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public boolean updateRemark(String openid,String remark){
+		
+		boolean success = false;
+		
+		//构建请求信息
+		JSONObject rootJson = new JSONObject();
+		try {
+			rootJson.put("openid", openid);
+			rootJson.put("remark", remark);
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		
+		//调用设置用户备注名接口
+		String url = APIConfig.UPDATE_REMARK+AccessTokenManager.accesstoken;
+		String response = HttpsDataManager.sendData(url, rootJson.toString());
+		
+		//解析对应的JSON代码
+	    try{
+	    	JSONObject responseJson  = new JSONObject(response);
+	    	if(responseJson.getString("errmsg").equals("ok"))
+	    		success = true;
+	    } catch(JSONException e){
+	    	System.out.println(response);
+	    }
+	    
+		return success;
+	}
+	
+	
+	/**
+	 * main(这里用一句话描述这个方法的作用)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param args 
+	 *void
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

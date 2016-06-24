@@ -1,0 +1,185 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.base
+ * AccessToken.java
+ * Ver0.0.1
+ * 2016年6月20日-下午3:06:02
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.base;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import weixin.util.Util4Properties;
+
+
+
+
+/**
+ * 
+ * AccessToken
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年6月20日 下午3:06:02
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class AccessTokenManager extends   TimerTask {
+
+	//微信开发者重要的凭证
+	public final static String  appid =Util4Properties.readPropertiesFile(AccessTokenManager.class.getResourceAsStream("/weixin.properties"), "appid"); 
+	public final static String  appsecret =Util4Properties.readPropertiesFile(AccessTokenManager.class.getResourceAsStream("/weixin.properties"), "appsecret"); 
+	 
+
+	//AccessToken 与微信服务器通讯的重要票据
+	public static String accesstoken = "";
+	public static int expires_in = 7200;			//默认是7200秒过期
+
+	/**
+	 * 
+	 * 创建一个新的实例 AccessTokenManager.
+	 */
+	public AccessTokenManager(){
+		run();
+	}
+	
+	@Override
+	public void run() {
+
+		String result  = sendData("get wechat access token");
+   		ObjectMapper mapper = new ObjectMapper(); 
+   		
+   		try {
+				JsonNode rootNode = mapper.readTree(result);
+				accesstoken  = rootNode.path("access_token").getTextValue();
+				expires_in =  rootNode.path("expires_in").getIntValue();
+
+			
+				//System.out.println("【通知1】accesstoken:"+accesstoken);
+				//System.out.println("【通知2】expires_in:"+expires_in);
+				//System.out.println("【通知3】app id:"+AccessTokenManager.appid);
+				//System.out.println("【通知4】app secret:"+AccessTokenManager.appsecret);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+
+	
+    private String sendData(String data){
+    	    
+    	       String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+appsecret;
+    	       Map<String,String> paramsData = new HashMap<String,String>();
+    	       paramsData.put("data", data);
+    	       return send(url,paramsData);
+    }
+    
+    
+    /**
+     * 
+     * send(发送HTTPS请求)
+     * (这里描述这个方法适用条件 – 可选)
+     * @param url
+     * @param paramsMap
+     * @return 
+     * String
+     * @exception 
+     * @since  0.0.1
+     */
+    public String send(String url,Map<String,String> paramsMap){
+    	    
+    		String result = null;
+    	      
+    	  	PostMethod postMethod = null;
+    		HttpClient httpClient = new HttpClient();
+    		
+    		httpClient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
+    		postMethod = new PostMethod(url);
+    		
+    		//Accesstoken的获取不需要参数
+//    		if (paramsMap != null && paramsMap.size() > 0) {
+//    			NameValuePair[] datas = new NameValuePair[paramsMap.size()];
+//    			int index = 0;
+//    			for (String key : paramsMap.keySet()) {
+//    				datas[index++] = new NameValuePair(key, paramsMap.get(key));
+//    			}
+//    			postMethod.setRequestBody(datas);
+//    		}
+
+    		HttpClientParams httparams = new HttpClientParams();
+    		httparams.setSoTimeout(60000);
+    		postMethod.setParams(httparams);
+    		
+    		try {
+    			int statusCode = httpClient.executeMethod(postMethod);
+    			if (statusCode == HttpStatus.SC_OK) {
+    				result = postMethod.getResponseBodyAsString();
+    			} else {
+    				System.out.println(" http response status is " + statusCode);
+    			}
+
+    		} catch (HttpException e) {
+    			
+    		} catch (IOException e) {
+    			
+    		} finally {
+    			if (postMethod != null) {
+    				postMethod.releaseConnection();
+    			}
+    		}
+    	      
+    	    return result;
+    }
+	
+    
+    /**
+     * 
+     * main(测试获取AccessToken的方法)
+     * (参考文档 http://blog.csdn.net/java_huashan/article/details/9353903)
+     * @param args 
+     * void
+     * @exception 
+     * @since  0.0.1
+     */
+    public static void main(String args[]){
+    	
+    	    /**
+    	     * Accesstoken 这段代码执行之后后台生产环境要重新部署
+    	     */
+//    		AccessTokenManager   accessTokenManager  = new AccessTokenManager();
+//    		String tempStr  = accessTokenManager.sendData("weixin data");
+//    		
+//    		ObjectMapper mapper = new ObjectMapper(); 
+//    		try {
+//				JsonNode rootNode = mapper.readTree(tempStr);
+//				accesstoken  = rootNode.path("access_token").getTextValue();
+//				expires_in =  rootNode.path("expires_in").getIntValue();
+//				
+//				//System.out.println("AccessToken:"+accesstoken+"\nExpires_in:"+expires_in);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//    		
+//    		Timer timer  = new Timer();
+//    		timer.schedule(accessTokenManager, 0,60000);
+  
+    	
+    		
+    }
+}
