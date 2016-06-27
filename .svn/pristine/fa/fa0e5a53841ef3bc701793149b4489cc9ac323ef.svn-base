@@ -1,0 +1,231 @@
+/**
+ * 包打听全知道-微信H5版本
+ * weixin.msg
+ * RequestEventMsg.java
+ * Ver0.0.1
+ * 2016年6月20日-下午1:56:42
+ *  2016全智道(北京)科技有限公司-版权所有
+ * 
+ */
+package weixin.msg;
+
+import java.util.List;
+
+import org.jdom.Element;
+
+import weixin.msg.model.base.WeixinMsg;
+import weixin.msg.model.event.ClickEvent;
+import weixin.msg.model.event.ScanEvent;
+import weixin.msg.model.event.SubscribeEvent;
+import weixin.msg.model.event.LocationEvent;
+import weixin.msg.model.event.TemplateSendJobFinishEvent;
+import weixin.msg.model.event.ViewEvent;
+
+/**
+ * 
+ * RequestEventMsg
+ * 
+ * 李华栋
+ * 李华栋
+ * 2016年6月20日 下午1:56:42
+ * 
+ * @version 0.0.1
+ * 
+ */
+public class RequestEventMsg {
+	
+	private String toUserName;
+	private String fromUserName;
+	private String createTime;
+	private String msgType;
+	private String event;
+	
+	private String eventKey;
+	private String ticket;
+	private String latitude;
+	private String longitude;
+	private String precision;
+	private String menuID;
+	private String msgID;
+	private String status;
+	
+	/**
+	 * getRegularMessage 构建事件类微信消息对象
+	 * @param list
+	 *WeixinMsg
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public WeixinMsg getEventMessage(List<Object> list){
+		WeixinMsg wxmsg = null;
+		//获取请求信息
+		Element element = null;
+		msgType = "event";
+		ticket = "";	//区分关注与扫码关注
+		menuID = "";	//区分是否是来自个性化菜单
+		for(int i=0;i<list.size();i++){
+			if(element.getName().equals("ToUserName")){
+				toUserName = element.getValue().trim();
+			} else if(element.getName().equals("FromUserName")){
+				fromUserName = element.getValue().trim();
+			} else if(element.getName().equals("CreateTime")){
+				createTime = element.getValue().trim();
+			} else if(element.getName().equals("Event")){
+				event = element.getValue().trim();
+			} else if(element.getName().equals("EventKey")){
+				eventKey = element.getValue().trim();
+			} else if(element.getName().equals("Ticket")){
+				ticket = element.getValue().trim();
+			} else if(element.getName().equals("Latitude")){
+				latitude = element.getValue().trim();
+			} else if(element.getName().equals("Longitude")){
+				longitude = element.getValue().trim();
+			} else if(element.getName().equals("Precision")){
+				precision = element.getValue().trim();
+			} else if(element.getName().equals("MenuID")){
+				menuID = element.getValue().trim();
+			} else if(element.getName().equals("MsgID")){
+				msgID = element.getValue().trim();
+			} else if(element.getName().equals("Status")){
+				status = element.getValue().trim();
+			}
+		}
+		
+		//构造事件类微信消息对象
+		if(event.equals("subscribe")||event.equals("unsubscribe")){
+			wxmsg = getSubscribe();
+		} else if(event.equals("SCAN")){
+			wxmsg = getScan();
+		} else if(event.equals("LOCATION")){
+			wxmsg = getLocation();
+		} else if(event.equals("CLICK")){
+			wxmsg = getClick();
+		} else if(event.equals("VIEW")){
+			wxmsg = getView();
+		} else if(event.equals("TEMPLATESENDJOBFINISH")){
+			wxmsg = getTemplate();
+		}
+				
+		return wxmsg;
+	}
+	
+	/**
+	 *构造 SubscribeEvent对象 
+	 **/
+	private SubscribeEvent getSubscribe(){
+		SubscribeEvent se = new SubscribeEvent();
+		
+		se.setToUserName(toUserName);
+		se.setFromUserName(fromUserName);
+		se.setCreateTime(createTime);
+		se.setMsgType(msgType);
+		se.setEvent(event);
+		if(ticket.length()>0){
+			se.setEventKey(eventKey);
+			se.setTicket(ticket);
+		}
+		
+		return se;
+	}
+	
+	/**
+	 *构造 ScanEvent对象 
+	 **/
+	private ScanEvent getScan(){
+		ScanEvent se = new ScanEvent();
+		
+		se.setToUserName(toUserName);
+		se.setFromUserName(fromUserName);
+		se.setCreateTime(createTime);
+		se.setMsgType(msgType);
+		se.setEvent(event);
+		se.setEventKey(eventKey);
+		se.setTicket(ticket);
+		
+		return se;
+	}
+	
+	/**
+	 *构造 LocationEvent对象 
+	 **/
+	private LocationEvent getLocation(){
+		LocationEvent le = new LocationEvent();
+		
+		le.setToUserName(toUserName);
+		le.setFromUserName(fromUserName);
+		le.setCreateTime(createTime);
+		le.setMsgType(msgType);
+		le.setEvent(event);
+		le.setLatitude(latitude);
+		le.setLongitude(longitude);
+		le.setPrecision(precision);
+		
+		return le;
+	}
+	
+	/**
+	 *构造 ClickEvent对象 
+	 **/
+	private ClickEvent getClick(){
+		ClickEvent ce = new ClickEvent();
+		
+		ce.setToUserName(toUserName);
+		ce.setFromUserName(fromUserName);
+		ce.setCreateTime(createTime);
+		ce.setMsgType(msgType);
+		ce.setEvent(event);
+		ce.setEventKey(eventKey);
+		
+		return ce;
+	}
+	
+	/**
+	 *构造 ViewEvent对象 
+	 **/
+	private ViewEvent getView(){
+		ViewEvent ve = new ViewEvent();
+		
+		ve.setToUserName(toUserName);
+		ve.setFromUserName(fromUserName);
+		ve.setCreateTime(createTime);
+		ve.setMsgType(msgType);
+		ve.setEvent(event);
+		ve.setEventKey(eventKey);
+		if(menuID.length()>0){
+			ve.setMenuID(menuID);
+		}
+		
+		return ve;
+	}
+	
+	/**
+	 *构造 TemplateSendJobFinishEvent对象 
+	 **/
+	private TemplateSendJobFinishEvent getTemplate(){
+		TemplateSendJobFinishEvent te = new TemplateSendJobFinishEvent();
+		
+		te.setToUserName(toUserName);
+		te.setFromUserName(fromUserName);
+		te.setCreateTime(createTime);
+		te.setMsgType(msgType);
+		te.setEvent(event);
+		te.setMsgId(msgID);
+		te.setStatus(status);
+		
+		return te;
+	}
+
+	/**
+	 * main(这里用一句话描述这个方法的作用)
+	 * (这里描述这个方法适用条件 – 可选)
+	 * @param args 
+	 *void
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -14,6 +14,10 @@ import weixin.base.AccessTokenManager;
 import weixin.util.HttpsDataManager;
 
 
+
+
+import org.json.JSONObject;
+
 /**
  * 
  * Response
@@ -27,18 +31,6 @@ import weixin.util.HttpsDataManager;
  */
 public class Response {
 
-	/**
-	 * 
-	 * sendMsg(发送被动式消息)
-	 * (这里描述这个方法适用条件 – 可选)
-	 * @param strXML 
-	 *void
-	 * @exception 
-	 * @since  0.0.1
-	 */
-	public void  sendMsg(String strXML){
-		
-	}
 	/**
 	 * sendCSMsg(统一发送客服消息)
 	 * @param strJSON 
@@ -64,26 +56,8 @@ public class Response {
 			String url = APIConfig.MSG_TMPT_URL+ AccessTokenManager.accesstoken;
 		    return HttpsDataManager.sendData(url, strJSON);
 		 
-<<<<<<< .mine
 	 }
 	 
-	 /**
-	  * 
-	  * sendGroupMsg(统一发送群发消息)
-	  * (这里描述这个方法适用条件 – 可选)
-	  * @param strJSON
-	  * @return 
-	  *String
-	  * @exception 
-	  * @since  0.0.1
-	  */
-	 public String sendGroupMsg(String strJSON){
-		return strJSON;
-		 
-			//String url = APIConfig.MSG_TMPT_URL+ AccessTokenManager.accesstoken;
-		    //return HttpsDataManager.sendData(url, strJSON);
-	 }
-
 
 	
 	/**
