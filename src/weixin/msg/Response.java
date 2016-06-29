@@ -58,7 +58,31 @@ public class Response {
 		 
 	 }
 	 
-
+	 /**
+	 * sendGroupMsg(统一根据标签发送群发消息)
+	 * @param strJSON 
+	 * String
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	 public String sendGroupMsg_Tag(String strJSON){
+		 
+			String url = APIConfig.MSG_GROUP_TAG_URL+ AccessTokenManager.accesstoken;
+		    return HttpsDataManager.sendData(url, strJSON);
+	 }
+	 
+	 /**
+	 * sendGroupMsg(统一根据OpenID列表发送群发消息)
+	 * @param strJSON 
+	 * String
+	 * @exception 
+	 * @since  0.0.1
+	 */
+	 public String sendGroupMsg_Openid(String strJSON){
+		 
+			String url = APIConfig.MSG_GROUP_OPENID_URL+ AccessTokenManager.accesstoken;
+		    return HttpsDataManager.sendData(url, strJSON);
+	 }
 	
 	/**
 	 * main(这里用一句话描述这个方法的作用)

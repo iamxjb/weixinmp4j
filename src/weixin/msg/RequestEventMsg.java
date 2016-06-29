@@ -16,6 +16,7 @@ import org.jdom.Element;
 import weixin.msg.model.base.WeixinMsg;
 import weixin.msg.model.event.ClickEvent;
 import weixin.msg.model.event.LocationSelectEvent;
+import weixin.msg.model.event.MassSendJobFinishEvent;
 import weixin.msg.model.event.PicPhotoOrAlbumEvent;
 import weixin.msg.model.event.PicSysphotoEvent;
 import weixin.msg.model.event.PicWeixinEvent;
@@ -26,6 +27,12 @@ import weixin.msg.model.event.SubscribeEvent;
 import weixin.msg.model.event.LocationEvent;
 import weixin.msg.model.event.TemplateSendJobFinishEvent;
 import weixin.msg.model.event.ViewEvent;
+import weixin.msg.model.event.account.AnnualRenew;
+import weixin.msg.model.event.account.NamingVerifyFail;
+import weixin.msg.model.event.account.NamingVerifySuccess;
+import weixin.msg.model.event.account.QualificationVerifyFail;
+import weixin.msg.model.event.account.QualificationVerifySuccess;
+import weixin.msg.model.event.account.VerifyExpired;
 
 /**
  * 
@@ -60,7 +67,7 @@ public class RequestEventMsg {
 	private String location_Y;
 	private String scale;
 	private String label;
-	private String poiname;//!!!!!!!!!!!!
+	private String poiname;
 	private String sendPicsInfo;
 	private String count;
 	private String picList;
@@ -68,6 +75,13 @@ public class RequestEventMsg {
 	private String scanCodeInfo;
 	private String scanType;
 	private String scanResult;
+	private String totalCount;
+	private String filterCount;
+	private String sentCount;
+	private String errorCount;
+	private String expiredTime;
+	private String failTime;
+	private String failReason;
 	
 	/**
 	 * getRegularMessage 构建事件类微信消息对象
@@ -135,6 +149,20 @@ public class RequestEventMsg {
 				scanType = element.getValue().trim();
 			} else if(element.getName().equals("ScanResult")){
 				scanResult = element.getValue().trim();
+			} else if(element.getName().equals("TotalCount")){
+				totalCount = element.getValue().trim();
+			} else if(element.getName().equals("FilterCount")){
+				filterCount = element.getValue().trim();
+			} else if(element.getName().equals("SentCount")){
+				sentCount = element.getValue().trim();
+			} else if(element.getName().equals("ErrorCount")){
+				errorCount = element.getValue().trim();
+			} else if(element.getName().equals("ExpiredTime")){
+				expiredTime = element.getValue().trim();
+			} else if(element.getName().equals("FailTime")){
+				failTime = element.getValue().trim();
+			} else if(element.getName().equals("FailReason")){
+				failReason = element.getValue().trim();
 			}
 		}
 		
@@ -163,6 +191,20 @@ public class RequestEventMsg {
 			wxmsg = getScancodePush();
 		} else if(event.equals("scancode_waitmsg")){
 			wxmsg = getScancodeWaitmsg();
+		} else if(event.equals("MASSSENDJOBFINISH")){
+			wxmsg = getMassSendJobFinish();
+		} else if(event.equals("qualification_verify_success")){
+			wxmsg = getQualificationVerifySuccess();
+		} else if(event.equals("qualification_verify_fail")){
+			wxmsg = getQualificationVerifyFail();
+		} else if(event.equals("naming_verify_success")){
+			wxmsg = getNamingVerifySuccess();
+		} else if(event.equals("naming_verify_fail")){
+			wxmsg = getNamingVerifyFail();
+		} else if(event.equals("annual_renew")){
+			wxmsg = getAnnualRenew();
+		} else if(event.equals("verify_expired")){
+			wxmsg = getVerifyExpired();
 		}
 				
 		return wxmsg;
@@ -393,6 +435,126 @@ public class RequestEventMsg {
 		
 		return se;
 	}
+	
+	/**
+	 *构造 MassSendJobFinishEvent对象 
+	 **/
+	private MassSendJobFinishEvent getMassSendJobFinish(){
+		MassSendJobFinishEvent me = new MassSendJobFinishEvent();
+		
+		me.setToUserName(toUserName);
+		me.setFromUserName(fromUserName);
+		me.setCreateTime(createTime);
+		me.setMsgType(msgType);
+		me.setEvent(event);
+		me.setMsgId(msgID);
+		me.setStatus(status);
+		me.setTotalCount(totalCount);
+		me.setFilterCount(filterCount);
+		me.setSentCount(sentCount);
+		me.setErrorCount(errorCount);
+		
+		return me;
+	}
+	
+	/**
+	 *构造 QualificationVerifySuccess对象 
+	 **/
+	private QualificationVerifySuccess getQualificationVerifySuccess(){
+		QualificationVerifySuccess qe = new QualificationVerifySuccess();
+		
+		qe.setToUserName(toUserName);
+		qe.setFromUserName(fromUserName);
+		qe.setCreateTime(createTime);
+		qe.setMsgType(msgType);
+		qe.setEvent(event);
+		qe.setExpiredTime(expiredTime);
+		
+		return qe;
+	}
+	
+	/**
+	 *构造 QualificationVerifyFail对象 
+	 **/
+	private QualificationVerifyFail getQualificationVerifyFail(){
+		QualificationVerifyFail qe = new QualificationVerifyFail();
+		
+		qe.setToUserName(toUserName);
+		qe.setFromUserName(fromUserName);
+		qe.setCreateTime(createTime);
+		qe.setMsgType(msgType);
+		qe.setEvent(event);
+		qe.setFailTime(failTime);
+		qe.setFailReason(failReason);
+		
+		return qe;
+	}
+	
+	/**
+	 *构造 NamingVerifySuccess对象 
+	 **/
+	private NamingVerifySuccess getNamingVerifySuccess(){
+		NamingVerifySuccess ne = new NamingVerifySuccess();
+		
+		ne.setToUserName(toUserName);
+		ne.setFromUserName(fromUserName);
+		ne.setCreateTime(createTime);
+		ne.setMsgType(msgType);
+		ne.setEvent(event);
+		ne.setExpiredTime(expiredTime);
+		
+		return ne;
+	}
+	
+	/**
+	 *构造 NamingVerifyFail对象 
+	 **/
+	private NamingVerifyFail getNamingVerifyFail(){
+		NamingVerifyFail ne = new NamingVerifyFail();
+		
+		ne.setToUserName(toUserName);
+		ne.setFromUserName(fromUserName);
+		ne.setCreateTime(createTime);
+		ne.setMsgType(msgType);
+		ne.setEvent(event);
+		ne.setFailTime(failTime);
+		ne.setFailReason(failReason);
+		
+		return ne;
+	}
+	
+	/**
+	 *构造 AnnualRenew对象 
+	 **/
+	private AnnualRenew getAnnualRenew(){
+		AnnualRenew ae = new AnnualRenew();
+		
+		ae.setToUserName(toUserName);
+		ae.setFromUserName(fromUserName);
+		ae.setCreateTime(createTime);
+		ae.setMsgType(msgType);
+		ae.setEvent(event);
+		ae.setExpiredTime(expiredTime);
+		
+		return ae;
+	}
+	
+	/**
+	 *构造 VerifyExpired对象 
+	 **/
+	private VerifyExpired getVerifyExpired(){
+		VerifyExpired ve = new VerifyExpired();
+		
+		ve.setToUserName(toUserName);
+		ve.setFromUserName(fromUserName);
+		ve.setCreateTime(createTime);
+		ve.setMsgType(msgType);
+		ve.setEvent(event);
+		ve.setExpiredTime(expiredTime);
+		
+		return ve;
+	}
+	
 	/**
 	 * main(这里用一句话描述这个方法的作用)
 	 * (这里描述这个方法适用条件 – 可选)

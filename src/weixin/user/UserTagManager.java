@@ -47,7 +47,7 @@ public class UserTagManager {
 	public boolean addUserTag(int tagid, List openidList){
 		
 		boolean success = false;
-		
+	
 		//构建请求信息
 		JSONObject rootJson = new JSONObject();
 		JSONArray subJson = new JSONArray();

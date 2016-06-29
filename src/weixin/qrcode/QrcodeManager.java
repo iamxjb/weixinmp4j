@@ -40,7 +40,7 @@ public class QrcodeManager {
 	 * @exception 
 	 * @since  0.0.1
 	 */
-	public Map getTempQrcode(int expire, int sceneId){
+	public HashMap getTempQrcode(int expire, int sceneId){
 		
 		HashMap hm = new HashMap();
 		
@@ -89,10 +89,10 @@ public class QrcodeManager {
 	 * @exception 
 	 * @since  0.0.1
 	 */
-	public Map getTempQrcode(int sceneId){
+	public HashMap getTempQrcode(int sceneId){
 		
-		//临时二维码默认有效期为30秒
-		return getTempQrcode(30, sceneId);
+		//临时二维码默认有效期为60秒
+		return getTempQrcode(60, sceneId);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class QrcodeManager {
 	 * @exception 
 	 * @since  0.0.1
 	 */
-	public Map getPermQrcode(String sceneStr){
+	public HashMap getPermQrcode(String sceneStr){
 		
 		HashMap<String, String> hm = new HashMap<String, String>();
 				
@@ -145,7 +145,7 @@ public class QrcodeManager {
 	 * @exception 
 	 * @since  0.0.1
 	 */
-	public Map getPermQrcode(int sceneId){
+	public HashMap getPermQrcode(int sceneId){
 		
 		HashMap<String, String> hm = new HashMap<String, String>();
 				
@@ -189,7 +189,40 @@ public class QrcodeManager {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		//1、获取accesstoken
+//		AccessTokenManager  atm  = new AccessTokenManager();
+//		AccessTokenManager.accesstoken = "3vIszRQqBgan51iMPx_3EPXwGDSOVIaHGopFB0n2cU7XK1FxhC6vt5ds2kVXbQhlrMcJRPuJa3UZVy9KdL0KY_ZT8k41bJ4TDpxGzVvZcDmCuIitjIHNXjv37o1v0ySZLWQgADAGRL";
+		
+		//2、测试获取临时二维码ticket
+//		QrcodeManager qm = new QrcodeManager();
+//		HashMap hm = qm.getTempQrcode(120, 001);
+//		System.out.println("----------get temp qrcode----------");
+//		System.out.println("ticket: "+hm.get("ticket"));
+//		System.out.println("expire seconds: "+hm.get("expire_seconds"));
+//		System.out.println("url: "+hm.get("url"));
+		
+		//3、测试获取临时二维码ticket（默认有效时间）
+//		QrcodeManager qm = new QrcodeManager();
+//		HashMap hm = qm.getTempQrcode(002);
+//		System.out.println("----------get temp qrcode(default)----------");
+//		System.out.println("ticket: "+hm.get("ticket"));
+//		System.out.println("expire seconds: "+hm.get("expire_seconds"));
+//		System.out.println("url: "+hm.get("url"));
+		
+		//4、测试获取永久二维码ticket（scene_id）
+//		QrcodeManager qm = new QrcodeManager();
+//		HashMap hm = qm.getPermQrcode(003);
+//		System.out.println("----------get permanent qrcode(scene_id)----------");
+//		System.out.println("ticket: "+hm.get("ticket"));
+//		System.out.println("url: "+hm.get("url"));
+		
+		//5、测试获取永久二维码ticket（scene_str）
+//		QrcodeManager qm = new QrcodeManager();
+//		HashMap hm = qm.getPermQrcode("abc");
+//		System.out.println("----------get permanent qrcode(scene_str)----------");
+//		System.out.println("ticket: "+hm.get("ticket"));
+//		System.out.println("url: "+hm.get("url"));
+		
 	}
 
 }

@@ -9,11 +9,11 @@
  */
 package weixin.msg.model.event.account;
 
-import weixin.msg.model.base.WeixinMsg;
+import weixin.msg.model.base.WeixinEventMsg;
 
 /**
  * 
- * QualificationVerifySuccess
+ * QualificationVerifySuccess 资质认证成功（此时立即获得接口权限）
  * 
  * 李华栋
  * 李华栋
@@ -22,7 +22,7 @@ import weixin.msg.model.base.WeixinMsg;
  * @version 0.0.1
  * 
  */
-public class QualificationVerifySuccess extends WeixinMsg{
+public class QualificationVerifySuccess extends WeixinEventMsg{
 
 	
 	private String  expiredTime;
