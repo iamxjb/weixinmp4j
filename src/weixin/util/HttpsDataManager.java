@@ -95,6 +95,41 @@ public class HttpsDataManager {
 		return result;
 	}
 	
+	@SuppressWarnings("deprecation")
+	static String send(String url,Map<String,String> headerMap,Map<String,String> bodyMap){
+		    
+		String result = null;
+		PostMethod postMethod = null;
+		HttpClient httpClient = new HttpClient();
+		
+		httpClient.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
+		postMethod = new PostMethod(url);
+					
+		
+		HttpClientParams httparams = new HttpClientParams();
+		httparams.setSoTimeout(60000);
+		postMethod.setParams(httparams);
+		
+		try {
+			int statusCode = httpClient.executeMethod(postMethod);
+			if (statusCode == HttpStatus.SC_OK) {
+				result = postMethod.getResponseBodyAsString();
+			} else {
+				System.out.println("发送HTTPS数据错误 http response status is " + statusCode);
+			}
+		} catch (HttpException e) {
+			System.out.println("error url=" + url);
+		} catch (IOException e) {
+			System.out.println("error url=" + url);
+		} finally {
+			if (postMethod != null) {
+				postMethod.releaseConnection();
+			}
+		}
+		      
+		return result;
+	}
+	
 	/**
 	* 
 	* send(GET方式发送HTTPS请求)
@@ -136,4 +171,8 @@ public class HttpsDataManager {
 		return result;
 	}
 
+	public static void main(String []args){
+		
+		
+	}
 }

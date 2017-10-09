@@ -61,6 +61,8 @@ public class AccessTokenManager extends   TimerTask {
 		run();
 	}
 	
+
+	
 	@Override
 	public void run() {
 		try{
@@ -74,15 +76,16 @@ public class AccessTokenManager extends   TimerTask {
 				logger.info("【通知2】expires_in:"+expires_in);
 				logger.info("【通知3】app id:"+AccessTokenManager.appid);
 				logger.info("【通知4】app secret:"+AccessTokenManager.appsecret);	
+				
 		} catch(JSONException e){
-			System.out.println(e.toString());
+			//System.out.println(e.toString());
 		}
 	}
 
 	
     private String sendData(String data){
     	    
-    	       String url = APIConfig.ACCESSTOKEN_GET_URL+appid+"&secret="+appsecret;
+    	       String url = APIBaseConfig.ACCESSTOKEN_GET_URL+appid+"&secret="+appsecret;
     	       Map<String,String> paramsData = new HashMap<String,String>();
     	       paramsData.put("data", data);
     	       return send(url,paramsData);
@@ -119,7 +122,7 @@ public class AccessTokenManager extends   TimerTask {
     			if (statusCode == HttpStatus.SC_OK) {
     				result = postMethod.getResponseBodyAsString();
     			} else {
-    				System.out.println(" http response status is " + statusCode);
+    				//System.out.println(" http response status is " + statusCode);
     			}
 
     		} catch (HttpException e) {
@@ -151,8 +154,6 @@ public class AccessTokenManager extends   TimerTask {
     		AccessTokenManager   accessTokenManager  = new AccessTokenManager();
     		Timer timer  = new Timer();
     		timer.schedule(accessTokenManager, 0,10000);
-  
-    	
-    		
+
     }
 }

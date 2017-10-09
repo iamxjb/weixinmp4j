@@ -10,13 +10,11 @@
 package weixin.qrcode;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import weixin.base.APIConfig;
-import weixin.base.AccessTokenManager;
+import weixin.base.APIBaseConfig;
 import weixin.util.HttpsDataManager;
 
 /**
@@ -31,6 +29,12 @@ import weixin.util.HttpsDataManager;
  * 
  */
 public class QrcodeManager {
+	
+	private String accesstoken;
+	  
+	public QrcodeManager(String accesstoken){
+		this.accesstoken = accesstoken;
+	}
 	
 	/**
 	 * getTempQrcode(获取临时二维码ticket)
@@ -65,7 +69,7 @@ public class QrcodeManager {
 		}		
 				
 		//调用创建标签接口
-	    String url = APIConfig.QRCode_GET_URL+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.QRCode_GET_URL+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -75,7 +79,7 @@ public class QrcodeManager {
 	    	hm.put("expire_seconds", responseJson.getInt("expire_seconds"));
 	    	hm.put("url", responseJson.getString("url").replace("\\",""));
 	    } catch(JSONException e){
-	    	System.out.println(response);
+	        //System.out.println(response);
 	    }
 	    
 	    return hm;
@@ -122,7 +126,7 @@ public class QrcodeManager {
 		}		
 				
 		//调用创建标签接口
-	    String url = APIConfig.QRCode_GET_URL+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.QRCode_GET_URL+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -164,7 +168,7 @@ public class QrcodeManager {
 		}		
 				
 		//调用创建标签接口
-	    String url = APIConfig.QRCode_GET_URL+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.QRCode_GET_URL+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码

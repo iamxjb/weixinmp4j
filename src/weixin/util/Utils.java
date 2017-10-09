@@ -11,6 +11,7 @@ package weixin.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -37,6 +38,14 @@ public class Utils {
 	public static String getCurrentTime(){
 		SimpleDateFormat format=new SimpleDateFormat("yyyyMMddHHmmss");
 		return format.format(new Date());
+	}
+	
+	/**
+	 * 返回随机字符串
+	 */
+	public static String getNonce_str() {
+		String nonce_str_temp = UUID.randomUUID().toString();
+		return nonce_str_temp.substring(0, 32);
 	}
 	
 	

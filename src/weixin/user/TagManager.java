@@ -17,8 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import weixin.base.APIConfig;
-import weixin.base.AccessTokenManager;
+import weixin.base.APIBaseConfig;
 import weixin.util.HttpsDataManager;
 
 /**
@@ -33,6 +32,12 @@ import weixin.util.HttpsDataManager;
  * 
  */
 public class TagManager {
+	
+	private String accesstoken;
+	  
+	public TagManager(String accesstoken){
+		this.accesstoken = accesstoken;
+	}
 
     /**
      * 
@@ -59,7 +64,7 @@ public class TagManager {
 		}
 		
 		//调用创建标签接口
-	    String url = APIConfig.CREATE_TAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.CREATE_TAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -95,7 +100,7 @@ public class TagManager {
 		HashMap<String, String> hm = null;
 		
 		//调用查询标签接口
-	    String url = APIConfig.GET_TAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.GET_TAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url);
 	    
 		//解析对应的JSON代码
@@ -106,9 +111,9 @@ public class TagManager {
 	    	for(int i=0;i<tags.length();i++){
 	    		content = tags.getJSONObject(i);
 	    		hm = new HashMap<String, String>();
-	    		hm.put("id", content.getString("id"));
+	    		hm.put("id", content.getInt("id")+"");
 		    	hm.put("name", content.getString("name"));
-		    	hm.put("count", content.getString("count"));
+		    	hm.put("count", content.getInt("count")+"");
 		    	tagList.add(hm);
 	    	}
 	    } catch(JSONException e){
@@ -143,7 +148,7 @@ public class TagManager {
 		}
 		
 		//调用编辑标签接口
-	    String url = APIConfig.UPDATE_TAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.UPDATE_TAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -184,7 +189,7 @@ public class TagManager {
 		}
 		
 		//调用删除标签接口
-	    String url = APIConfig.DELETE_TAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.DELETE_TAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -226,7 +231,7 @@ public class TagManager {
 			}
 		
 			//调用获取标签下粉丝列表接口
-			String url = APIConfig.GET_USERLIST_TAG+AccessTokenManager.accesstoken;
+			String url = APIBaseConfig.GET_USERLIST_TAG+this.accesstoken;
 			String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 			//解析对应的JSON代码

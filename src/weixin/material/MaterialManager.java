@@ -21,14 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import weixin.base.APIConfig;
-import weixin.base.AccessTokenManager;
+import weixin.base.APIBaseConfig;
 import weixin.msg.model.material.Article;
 import weixin.util.HttpsDataManager;
 import weixin.util.HttpsFileUpload;
@@ -46,6 +44,12 @@ import weixin.util.HttpsFileUpload;
  */
 public class MaterialManager {
 	
+	private String accesstoken;
+	  
+	public MaterialManager(String accesstoken){
+		this.accesstoken = accesstoken;
+	}
+	
 	/**
 	 * addNews 新增永久图文素材
 	 * @param articles
@@ -54,7 +58,7 @@ public class MaterialManager {
 	public String addNews(List<Article> articles){
 		String mediaId = "";
 		
-		String url = APIConfig.ADD_NEWS + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.ADD_NEWS + this.accesstoken;
 		try {
 			JSONObject rootJson = new JSONObject();
 			JSONArray artArray = new JSONArray();
@@ -93,7 +97,7 @@ public class MaterialManager {
 	public String uploadImg(String filePath){
 		String imgUrl = "";
 		
-		String url = APIConfig.UPLOAD_IMG + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.UPLOAD_IMG + this.accesstoken;
 		
 		HttpsFileUpload hf = new HttpsFileUpload();
 		Map<String, String> fileMap = new HashMap<String, String>();
@@ -124,7 +128,7 @@ public class MaterialManager {
 	public HashMap<String, String> addMaterial(String filePath, String type, Map<String,String> description){
 		HashMap<String, String> hm = new HashMap<String, String>();
 		
-		String url = APIConfig.ADD_MATERIAL + AccessTokenManager.accesstoken+"&type="+type;
+		String url = APIBaseConfig.ADD_MATERIAL + this.accesstoken+"&type="+type;
 		
 		try {
 			HttpsFileUpload hf = new HttpsFileUpload();
@@ -165,7 +169,7 @@ public class MaterialManager {
 	public List<Article> getMaterial_article(String mediaId){
 		List<Article> list = new ArrayList<Article>();
 		
-		String url = APIConfig.GET_MATERIAL + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.GET_MATERIAL + this.accesstoken;
 		try {
 			JSONObject rootJson = new JSONObject();
 			rootJson.put("media_id", mediaId);
@@ -204,7 +208,7 @@ public class MaterialManager {
 	public HashMap<String,String> getMaterial_videoUrl(String mediaId){
 		HashMap<String,String> hm = new HashMap<String,String>();
 		
-		String url = APIConfig.GET_MATERIAL + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.GET_MATERIAL + this.accesstoken;
 		try {
 			JSONObject rootJson = new JSONObject();
 			rootJson.put("media_id", mediaId);
@@ -232,7 +236,7 @@ public class MaterialManager {
 	 */
 	public boolean downMaterial(String mediaId, String filePath, String fileName){
 		boolean success = true;
-		String url = APIConfig.GET_MATERIAL+ AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.GET_MATERIAL+ this.accesstoken;
 		
 		try {
 			JSONObject rootJson = new JSONObject();
@@ -309,7 +313,7 @@ public class MaterialManager {
 	public boolean deleteMaterial(String mediaId){
 		boolean success = false;
 		
-		String url = APIConfig.DELETE_MATERIAL + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.DELETE_MATERIAL + this.accesstoken;
 		try {
 			JSONObject rootJson = new JSONObject();
 			rootJson.put("media_id", mediaId);
@@ -336,7 +340,7 @@ public class MaterialManager {
 	public boolean updateNews(String mediaId, int index, Article article){
 		boolean success = false;
 		
-		String url = APIConfig.UPDATE_NEWS + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.UPDATE_NEWS + this.accesstoken;
 		try {
 			JSONObject rootJson = new JSONObject();
 			rootJson.put("media_id", mediaId);
@@ -369,7 +373,7 @@ public class MaterialManager {
 	public HashMap<String,Integer> getMaterialCount(){
 		HashMap<String,Integer> hm = new HashMap<String,Integer>();
 		
-		String url = APIConfig.GET_MATERIAL_COUNT + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.GET_MATERIAL_COUNT + this.accesstoken;
 		String response = HttpsDataManager.sendData(url);
 		try {
 			JSONObject res = new JSONObject(response);
@@ -399,7 +403,7 @@ public class MaterialManager {
 	public List<HashMap> getMaterilaList(String type, int offset, int count){
 		List<HashMap> list = new ArrayList<HashMap>();
 		
-		String url = APIConfig.GET_MATERIAL_LIST + AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.GET_MATERIAL_LIST + this.accesstoken;
 		try {
 			JSONObject rootJson = new JSONObject();
 			rootJson.put("type", type);

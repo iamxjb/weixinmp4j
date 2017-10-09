@@ -16,8 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import weixin.base.APIConfig;
-import weixin.base.AccessTokenManager;
+import weixin.base.APIBaseConfig;
 import weixin.util.HttpsDataManager;
 
 /**
@@ -32,6 +31,12 @@ import weixin.util.HttpsDataManager;
  * 
  */
 public class UserTagManager {
+	
+	private String accesstoken;
+	  
+	public UserTagManager(String accesstoken){
+		this.accesstoken = accesstoken;
+	}
 
 	/**
 	 * 
@@ -62,7 +67,7 @@ public class UserTagManager {
 		}
 		
 		//调用批量打标签接口
-	    String url = APIConfig.ADD_USERTAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.ADD_USERTAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -106,7 +111,7 @@ public class UserTagManager {
 		}
 		
 		//调用批量取消标签接口
-	    String url = APIConfig.DELETE_USERTAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.DELETE_USERTAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 		//解析对应的JSON代码
@@ -144,7 +149,7 @@ public class UserTagManager {
 		}
 		
 		//调用获取用户标签列表接口
-	    String url = APIConfig.GET_USERTAG+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.GET_USERTAG+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, rootJson.toString());
 	    
 	    //解析对应的JSON代码
