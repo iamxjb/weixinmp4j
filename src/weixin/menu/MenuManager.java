@@ -9,12 +9,10 @@
  */
 package weixin.menu;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import weixin.base.APIConfig;
-import weixin.base.AccessTokenManager;
+import weixin.base.APIBaseConfig;
 import weixin.util.HttpsDataManager;
 
 /**
@@ -29,6 +27,12 @@ import weixin.util.HttpsDataManager;
  * 
  */
 public class MenuManager {
+	
+	private String accesstoken;
+	  
+	public MenuManager(String accesstoken){
+		this.accesstoken = accesstoken;
+	}
 
 	/**
 	 * 
@@ -49,7 +53,7 @@ public class MenuManager {
 		boolean success = false;
 		
 		//调用自定义菜单创建接口
-	    String url = APIConfig.CREATE_MENU+AccessTokenManager.accesstoken;
+	    String url = APIBaseConfig.CREATE_MENU+this.accesstoken;
 	    String response = HttpsDataManager.sendData(url, jsonStr);
 	    
 	    //解析对应的JSON代码
@@ -79,7 +83,7 @@ public class MenuManager {
 		String response = null;
 		
 		//调用自定义菜单查询接口
-		String url = APIConfig.GET_MENU+AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.GET_MENU+this.accesstoken;
 		response = HttpsDataManager.sendData(url);
 		
 		return new JSONObject(response);
@@ -99,7 +103,7 @@ public class MenuManager {
 		boolean success = false;
 		
 		//调用自定义菜单删除接口
-		String url = APIConfig.DELETE_MENU+AccessTokenManager.accesstoken;
+		String url = APIBaseConfig.DELETE_MENU+this.accesstoken;
 		String response = HttpsDataManager.sendData(url);
 		
 		//解析对应的JSON代码

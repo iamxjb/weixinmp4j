@@ -9,14 +9,8 @@
  */
 package weixin.msg;
 
-import weixin.base.APIConfig;
-import weixin.base.AccessTokenManager;
+import weixin.base.APIBaseConfig;
 import weixin.util.HttpsDataManager;
-
-
-
-
-import org.json.JSONObject;
 
 /**
  * 
@@ -30,7 +24,13 @@ import org.json.JSONObject;
  * 
  */
 public class Response {
-
+	
+	
+	private String accesstoken;
+	
+	public Response(String accesstoken){
+		this.accesstoken = accesstoken;
+	}
 	/**
 	 * sendCSMsg(统一发送客服消息)
 	 * @param strJSON 
@@ -40,7 +40,7 @@ public class Response {
 	 */
 	 public String sendCSMsg(String strJSON){
 		 
-			String url = APIConfig.MSG_CS_URL+ AccessTokenManager.accesstoken;
+			String url = APIBaseConfig.MSG_CS_URL+ this.accesstoken;
 		    return HttpsDataManager.sendData(url, strJSON);
 	 }
 	
@@ -53,7 +53,10 @@ public class Response {
 	 */
 	 public String sendTptMsg(String strJSON){
 		 
-			String url = APIConfig.MSG_TMPT_URL+ AccessTokenManager.accesstoken;
+			String url = APIBaseConfig.MSG_TMPT_URL+ this.accesstoken;
+			
+			//System.out.println("APIConfig.MSG_TMPT_URL:"+APIConfig.MSG_TMPT_URL);
+			
 		    return HttpsDataManager.sendData(url, strJSON);
 		 
 	 }
@@ -67,7 +70,7 @@ public class Response {
 	 */
 	 public String sendGroupMsg_Tag(String strJSON){
 		 
-			String url = APIConfig.MSG_GROUP_TAG_URL+ AccessTokenManager.accesstoken;
+			String url = APIBaseConfig.MSG_GROUP_TAG_URL+ this.accesstoken;
 		    return HttpsDataManager.sendData(url, strJSON);
 	 }
 	 
@@ -80,10 +83,11 @@ public class Response {
 	 */
 	 public String sendGroupMsg_Openid(String strJSON){
 		 
-			String url = APIConfig.MSG_GROUP_OPENID_URL+ AccessTokenManager.accesstoken;
+			String url = APIBaseConfig.MSG_GROUP_OPENID_URL+ this.accesstoken;
 		    return HttpsDataManager.sendData(url, strJSON);
+		    
 	 }
-	
+
 	/**
 	 * main(这里用一句话描述这个方法的作用)
 	 * (这里描述这个方法适用条件 – 可选)
@@ -91,10 +95,11 @@ public class Response {
 	 *void
 	 * @exception 
 	 * @since  0.0.1
-	 */
+	*/
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		Response  res   = new Response("at");
+		res.sendTptMsg("AAAABBB");
 	}
 
 }

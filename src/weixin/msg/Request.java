@@ -18,7 +18,10 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
-import weixin.msg.model.base.WeixinMsg;
+
+import weixin.msg.builder.RequestEventMsgBuilder;
+import weixin.msg.builder.RequestMsgBuilder;
+import weixin.msg.model.base.WeixinMsgBase;
 
 /**
  * 
@@ -40,9 +43,9 @@ public class Request {
 	 * @exception 
 	 * @since  0.0.1
 	 */
-	public WeixinMsg getMessage(InputStream is){
+	public static WeixinMsgBase getMessage(InputStream is){
 		
-		WeixinMsg wxmsg = null;
+		WeixinMsgBase wxmsg = null;
 		
 		SAXBuilder sax = new SAXBuilder(); 
 		Document doc = null;
@@ -53,9 +56,10 @@ public class Request {
 		}
 
 		XMLOutputter XMLOut = new XMLOutputter();  
-		String tempStr = XMLOut.outputString(doc);
-		System.out.println("-------------request message-------------");
-		System.out.println(tempStr);
+		
+		//String tempStr = XMLOut.outputString(doc);
+		//System.out.println("-------------request message-------------");
+		//System.out.println(tempStr);
 		
 		//获得文件的根元素
 		Element root = doc.getRootElement();			
@@ -68,13 +72,15 @@ public class Request {
 			if(element.getName().equals("MsgType")){
 				String msgType = element.getValue().trim();
 				if(msgType.equals("event")){
+					
 					//事件类微信消息
-					RequestEventMsg rem = new RequestEventMsg();
+					RequestEventMsgBuilder rem = new RequestEventMsgBuilder();
 					wxmsg = rem.getEventMessage(list);
 				}
 				else{
+					
 					//普通微信消息
-					RequestMsg rm = new RequestMsg();
+					RequestMsgBuilder rm = new RequestMsgBuilder();
 					wxmsg = rm.getRegularMessage(list);
 				}
 				break;

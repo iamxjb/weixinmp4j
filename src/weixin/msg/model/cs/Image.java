@@ -9,7 +9,7 @@
  */
 package weixin.msg.model.cs;
 
-import weixin.msg.model.base.KefuMsg;
+import weixin.msg.model.base.KefuMsgBase;
 
 /**
  * 
@@ -22,7 +22,7 @@ import weixin.msg.model.base.KefuMsg;
  * @version 0.0.1
  * 
  */
-public class Image extends KefuMsg {
+public class Image extends KefuMsgBase {
 
 	private ImageDetail image;
 

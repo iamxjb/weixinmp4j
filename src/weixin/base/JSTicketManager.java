@@ -12,6 +12,7 @@ package weixin.base;
 import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import weixin.util.HttpsDataManager;
@@ -35,10 +36,11 @@ public class JSTicketManager extends  TimerTask{
 	public 	static String jsTicket = "";
 	public 	static int expires_in = 7200;//默认是7200秒过期
 	
+	private String accesstoken;
   
-	public JSTicketManager(){
+	public JSTicketManager(String accesstoken){
+		this.accesstoken = accesstoken;
 		run();
-		
 	}
 
 	/* (non-Javadoc)
@@ -47,7 +49,7 @@ public class JSTicketManager extends  TimerTask{
 	@Override
 	public void run() {
 		
-        String url = APIConfig.JSTICKET_URL+ AccessTokenManager.accesstoken+"&type=jsapi";
+        String url = APIBaseConfig.JSTICKET_URL+ this.accesstoken+"&type=jsapi";
 		//发送Https请求
 		String result = HttpsDataManager.sendData(url, "weixin js ticket");
 		
@@ -58,9 +60,15 @@ public class JSTicketManager extends  TimerTask{
 		}
 
 			
-			JSONObject  json   = new JSONObject(result);
-			jsTicket  = json.getString("ticket");
-			expires_in =  json.getInt("expires_in");
+			JSONObject json;
+			try {
+				json = new JSONObject(result);
+				jsTicket  = json.getString("ticket");
+				expires_in =  json.getInt("expires_in");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			logger.info("【通知5】JS-Ticket:"+JSTicketManager.jsTicket);
 
 	}
@@ -76,7 +84,7 @@ public class JSTicketManager extends  TimerTask{
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		AccessTokenManager   accessTokenManager  = new AccessTokenManager();
-		JSTicketManager  jsm  = new JSTicketManager();
+//		AccessTokenManager   accessTokenManager  = new AccessTokenManager();
+//		JSTicketManager  jsm  = new JSTicketManager();
 	}
 }
