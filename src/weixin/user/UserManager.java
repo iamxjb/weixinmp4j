@@ -37,63 +37,14 @@ public class UserManager {
 	private static Logger logger = Logger.getLogger(UserManager.class); 	
 	private String accesstoken;
 	
-	public UserManager(){
-	}
+	public UserManager(){}
 	
 	public UserManager(String accesstoken){
 		this.accesstoken = accesstoken;
 	}
 	
-    public String getNicknameByOpenid(String openid) throws Exception{
-    	
-        	APIBaseConfig    apiConfig  = new APIBaseConfig();
-		//调用获取用户信息的接口
-	    String  getUserInforUrl = apiConfig.USER_INFO+this.accesstoken+"&openid="+openid+"&lang=zh_CN";
-	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
-	    
-	    try {
-	    	//解析对应的JSON代码
-	    	JSONObject singleUseInfoObject;
-			singleUseInfoObject = new JSONObject(strJSONRes);
-			logger.info("根据openid获取昵称："+singleUseInfoObject.toString());
-		
-			if(singleUseInfoObject.getInt("subscribe") == 1){
-				return singleUseInfoObject.getString("nickname");			
-			}else{
-				return "微信用户";
-			}
-	    } catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    return "微信用户";
-}
-	
-    public String getImgByOpenid(String openid) throws JSONException{
 
-	    String  getUserInforUrl = APIBaseConfig.USER_INFO+this.accesstoken+"&openid="+openid+"&lang=zh_CN";
-	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "get user information");
-	    
-	    try {
-	    	//解析对应的JSON代码
-	    	JSONObject singleUseInfoObject;
-			singleUseInfoObject = new JSONObject(strJSONRes);
-		
-			logger.debug("根据openid获取头像："+singleUseInfoObject.toString());
-			if(singleUseInfoObject.getInt("subscribe") == 1){
-				return singleUseInfoObject.getString("headimgurl");
-			}else{
-				return "http://1251001145.cdn.myqcloud.com/1251001145/wukonglai/weixin/wukonglai200200.png";
-			}
-	    } catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    return "http://1251001145.cdn.myqcloud.com/1251001145/wukonglai/weixin/wukonglai200200.png";
-}
-	
-    
-    
+	 
     /**
      * 
      * getUserInfoByOpenid(根据openid获取用户信息)
@@ -107,9 +58,9 @@ public class UserManager {
      */
     public HashMap<String,String> getUserInfoByOpenid(String openid){
     	
-    		String  requestURL="https://api.weixin.qq.com/cgi-bin/user/info?access_token=";
+    		
 		//调用获取用户信息的接口
-	    String  getUserInforUrl = requestURL+this.accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  getUserInforUrl = APIBaseConfig.USER_INFO+this.accesstoken+"&openid="+openid+"&lang=zh_CN";
 	    String  strJSONRes  = HttpsDataManager.sendData(getUserInforUrl, "获取用户信息非WEB方式");
 	    
 	    HashMap  map   = new HashMap();
@@ -117,8 +68,6 @@ public class UserManager {
 				//解析对应的JSON代码
 		    		JSONObject singleUseInfoObject;
 				singleUseInfoObject = new JSONObject(strJSONRes);
-		
-			logger.debug("根据openid获取基本信息（非网页授权）\n："+singleUseInfoObject.toString());
 
 			if(singleUseInfoObject.getInt("subscribe") == 1){
 				map.put("nickname", singleUseInfoObject.getString("nickname"));
@@ -280,11 +229,11 @@ public class UserManager {
 	 * @exception 
 	 * @since  0.0.1
 	 */
-    public HashMap  getUserInfoByWEB(String openid,String accesstoken){
+    public HashMap<String,String>  getWEBUserInfoByOpenid(String openid,String accesstoken){
     	      
-		String  requestURL="https://api.weixin.qq.com/sns/userinfo?access_token=";
+		
 		//调用获取用户信息的接口
-	    String  getSNSUserInforUrl = requestURL+accesstoken+"&openid="+openid+"&lang=zh_CN";
+	    String  getSNSUserInforUrl = APIBaseConfig.USER_INFO_WEB+accesstoken+"&openid="+openid+"&lang=zh_CN";
 	    String  strJSONRes  = HttpsDataManager.sendData(getSNSUserInforUrl, "get user information");
     
 	    HashMap  map   = new HashMap();
@@ -292,9 +241,7 @@ public class UserManager {
 				//解析对应的JSON代码
 			    	JSONObject singleUseInfoObject;
 				singleUseInfoObject = new JSONObject(strJSONRes);
-	
-				logger.debug("根据openid获取网页基本信息："+singleUseInfoObject.toString());
-				
+					
 				if(singleUseInfoObject!=null){
 						
 						map.put("openid", singleUseInfoObject.getString("openid"));

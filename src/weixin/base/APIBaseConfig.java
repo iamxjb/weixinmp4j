@@ -141,11 +141,14 @@ public class APIBaseConfig {
 			public  final static  String  JSSDK_GETTICKET  = CURRENT_API+"cgi-bin/ticket/getticket?access_token=";
 			
 			
-			//----------用户管理----------//
 			/**
-			 * 获取用户信息URL
+			 * ---------------------------------------------------------用户管理------------------------------------------------------------
 			 */
+		
+			 //获取用户信息URL
 			public  final static  String  USER_INFO  = CURRENT_API+"cgi-bin/user/info?access_token=";
+			public  final static  String  USER_INFO_WEB  = CURRENT_API+"sns/userinfo?access_token=";
+			
 			/**
 			 * 创建用户标签URL
 			 */
@@ -203,7 +206,10 @@ public class APIBaseConfig {
 			public  final static  String  DELETE_MENU  = CURRENT_API+"cgi-bin/menu/delete?access_token=";
 			
 			
-			//----------素材管理----------//
+			/**
+			 * ----------------------------------------------------------------------素材管理-----------------------------------------------------------------------
+            */
+			
 			/**
 			 * 新增临时素材URL
 			 */
